@@ -60,6 +60,7 @@ const deleteCart = async (id) => {
 
 
 export default {
+  createCart,
   getCart,
   getCartById,
   getAllCarts,

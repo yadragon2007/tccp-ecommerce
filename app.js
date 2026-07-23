@@ -68,7 +68,8 @@ import categories from "./routes/categories.routes.js";
 app.use("/api/categories", categories);
 import products from "./routes/products.routes.js";
 app.use("/api/products", products);
-
+import cart from "./routes/cart.routes.js";
+app.use("/api/cart", cart);
 // 404
 app.use((req, res) => {
   res.status(404).json({ status: "fail", message: "Route not found", code: "0006" });

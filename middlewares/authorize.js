@@ -77,7 +77,42 @@ const UserAuthorization = asyncHandler(async (req, res, next) => {
   next();
 });
 
+const PublicUserAuthorization = asyncHandler(async (req, res, next) => {
+  const authorization = req.cookies.TOKEN;
+
+  if (!authorization || !authorization.startsWith("Bearer")) {
+    res.clearCookie("TOKEN");
+    req.auth = { userId: "" };
+    return next();
+  }
+
+  const token = authorization.split(" ")[1];
+  const decoded = jwt.verify(token, env.jwt.secret);
+
+  const user = await User.findById(decoded.id);
+  if (!user) {
+    res.clearCookie("TOKEN");
+    req.auth = { userId: "" };
+    return next();
+  }
+
+  if (user.whenPasswordChanged) {
+    const currentTimeStamp = parseInt(
+      user.whenPasswordChanged.getTime() / 1000,
+    );
+    if (currentTimeStamp > decoded.iat) {
+      res.clearCookie("TOKEN");
+      req.auth = { userId: "" };
+      return next();
+    }
+  }
+
+  req.auth = { userId: user.id };
+  next();
+});
+
 export default {
   AdminAuthorization,
   UserAuthorization,
+  PublicUserAuthorization,
 };
