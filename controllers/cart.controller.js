@@ -6,13 +6,11 @@ import slug from "slug";
 const cart_create_post = asyncHandler(async (req, res) => {
   const { userId } = req.auth;
   let signIn = false;
-  if (userId) {
-    signIn = true;
-  }
-  const cartData = {
-    userId,
+  let cartData = {
     signIn,
   };
+
+  if (userId) cartData[userId] = userId;
 
   const newCart = await Cart.createCart(cartData);
 
