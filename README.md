@@ -66,6 +66,14 @@ cp .env.example .env
 
 
 
+## 5. Run The Code
+
+
+```bash
+npm run dev
+```
+
+
 
 # TCCD E-Commerce Backend — API Endpoints Reference
 
