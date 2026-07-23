@@ -60,6 +60,7 @@ const deleteProduct = async (id) => {
 
 
 export default {
+  createProduct,
   getProduct,
   getProductById,
   getAllProducts,
