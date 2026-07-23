@@ -6,6 +6,7 @@ import userService from "../services/users.service.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import AppError from "../utils/AppError.js";
 import cookies from "cookie-parser";
+import cartService from "../services/cart.service.js";
 
 const sanitizeAccount = (account) => ({
   _id: account._id,
@@ -29,6 +30,7 @@ const signIn_auth = asyncHandler(async (req, res) => {
     secure: env.nodeEnv === "production", // Sent only over HTTPS in production
     sameSite: "lax", // Protects against CSRF attacks
   });
+
   res.status(201).send({ data: sanitizeAccount(account) });
 });
 

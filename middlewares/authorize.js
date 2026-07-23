@@ -3,7 +3,8 @@ import jwt from "jsonwebtoken";
 import env from "../config/env.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import AppError from "../utils/AppError.js";
-
+import Cart from "../models/Cart.js";
+import CartItem from "../models/CartItem.js";
 const APIusers = { User };
 
 const AdminAuthorization = asyncHandler(async (req, res, next) => {
@@ -111,8 +112,50 @@ const PublicUserAuthorization = asyncHandler(async (req, res, next) => {
   next();
 });
 
+const CartAuthorization = asyncHandler(async (req, res, next) => {
+  const authorization = req.cookies.CART;
+
+  if (!authorization || !authorization.startsWith("Bearer"))
+    throw new AppError("User loggedout", 401, 210);
+
+  const token = authorization.split(" ")[1];
+  const decoded = jwt.verify(token, env.jwt.secret);
+
+  const cart = await Cart.findById(decoded.id);
+  if (!cart) throw new AppError("cart is not exists", 401, 211);
+  if (cart.id != req.params.CartId) throw new AppError("forbidden", 401, 211);
+  req.auth = { CartId: cart.id };
+  next();
+});
+
+
+const CartItemAuthorization = asyncHandler(async (req, res, next) => {
+  const authorization = req.cookies.CART;
+  const cartItemId = req.params.cartItemId;
+  
+  if (!authorization || !authorization.startsWith("Bearer"))
+    throw new AppError("User loggedout", 401, 210);
+
+  const token = authorization.split(" ")[1];
+  const decoded = jwt.verify(token, env.jwt.secret);
+
+  const cart = await Cart.findById(decoded.id);
+  if (!cart) throw new AppError("cart is not exists", 401, 211);
+
+
+  const cartItem = await CartItem.findById(cartItemId)
+  if (!cartItem)  throw new AppError("cart Item is not exists", 401, 211);
+
+  if (cartItem.cartId != cart.id) throw new AppError("forbidden", 401, 211);
+  req.auth = { CartId: cart.id };
+  next();
+});
+
+
 export default {
   AdminAuthorization,
   UserAuthorization,
   PublicUserAuthorization,
+  CartAuthorization,
+  CartItemAuthorization,
 };

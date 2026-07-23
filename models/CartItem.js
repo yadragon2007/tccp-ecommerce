@@ -1,5 +1,4 @@
-import { Schema as _Schema, model } from "mongoose";
-const { Schema } = mongoose;
+import mongoose, { Schema, model } from "mongoose";
 
 const cartItemSchema = new Schema({
   cartId: { type: Schema.Types.ObjectId, ref: "Cart" },
@@ -7,6 +6,7 @@ const cartItemSchema = new Schema({
   quantity: { type: Number, required: true },
 });
 
-const CartItem = model("CartItem", cartItemSchema);
+// Access models via mongoose.models
+const CartItem = mongoose.models.CartItem || model("CartItem", cartItemSchema);
 
-export default User;
+export default CartItem;

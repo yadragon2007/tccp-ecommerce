@@ -8,7 +8,7 @@ import authenticate from "../middlewares/authenticate.js";
 import cartController from "../controllers/cart.controller.js";
 
 // @route   POST api/cart/
-// @desc    create new products
+// @desc    create new cart
 // @access  Public
 
 router.post(
@@ -16,6 +16,11 @@ router.post(
   authorize.PublicUserAuthorization,
   cartController.cart_create_post,
 );
+
+
+// @route   POST api/cart/
+// @desc    delete cart
+// @access  Public
 
 router.delete(
   "/",

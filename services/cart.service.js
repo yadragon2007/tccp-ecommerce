@@ -9,6 +9,14 @@ const createCart = async (data) => {
     throw error;
   }
 };
+const syncCartWithUser = async (cartId, userId,) => {
+  try {
+    await Cart.findByIdAndUpdate(cartId,{userId , signIn:true})
+    return;
+  } catch (error) {
+    throw error;
+  }
+};
 
 const getCart = async (data) => {
   try {
@@ -21,7 +29,7 @@ const getCart = async (data) => {
 
 const getCartById = async (id, select) => {
   try {
-    const query = Cart.findById(id)
+    const query = Cart.findById(id);
     if (select) query.select(select);
     const cart = await query;
     return cart;
@@ -32,7 +40,7 @@ const getCartById = async (id, select) => {
 
 const getAllCarts = async (filter = {}) => {
   try {
-    const carts = await Cart.find(filter)
+    const carts = await Cart.find(filter);
     return carts;
   } catch (error) {
     throw error;
@@ -42,7 +50,7 @@ const getAllCarts = async (filter = {}) => {
 const updateCart = async (id, data) => {
   try {
     await Cart.findByIdAndUpdate(id, data);
-    const updatedCart = await Cart.findById(id)
+    const updatedCart = await Cart.findById(id);
     return updatedCart;
   } catch (error) {
     throw error;
@@ -51,16 +59,16 @@ const updateCart = async (id, data) => {
 
 const deleteCart = async (id) => {
   try {
-    await Cart.findByIdAndDelete(id)
+    await Cart.findByIdAndDelete(id);
     return;
   } catch (error) {
     throw error;
   }
 };
 
-
 export default {
   createCart,
+  syncCartWithUser,
   getCart,
   getCartById,
   getAllCarts,
