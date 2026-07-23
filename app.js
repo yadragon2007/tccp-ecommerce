@@ -64,6 +64,8 @@ import auth from "./routes/auth.routes.js";
 app.use("/api/auth", auth);
 import users from "./routes/users.routes.js";
 app.use("/api/users", users);
+import categories from "./routes/categories.routes.js";
+app.use("/api/categories", categories);
 
 // 404
 app.use((req, res) => {

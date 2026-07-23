@@ -61,6 +61,7 @@ const deleteCategory = async (id) => {
 
 
 export default {
+  createCategory,
   getCategory,
   getCategoryById,
   getAllCategorys,
