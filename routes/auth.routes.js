@@ -3,7 +3,7 @@ const router = Router();
 
 import authController from "../controllers/auth.controller.js";
 import authValidator from "../validator/auth.validator.js";
-// import authorization from "../middlewares/authorization.js";
+import authorize from "../middlewares/authorize.js";
 import localValidationFunction from "../validator/localValidationFunction.js";
 import authenticate from "../middlewares/authenticate.js";
 import rateLimiter from "../middlewares/rateLimiter.js";
@@ -16,6 +16,7 @@ router.post(
   rateLimiter.accountCreateLimiter,
   authValidator.validateSignup,
   localValidationFunction.errorHandler,
+  authorize.CartAvilablityAuthorization,
   authController.signUp_auth
 );
 
@@ -28,6 +29,7 @@ router.post(
   authValidator.validateLogin,
   localValidationFunction.errorHandler,
   authenticate.Authentication,
+  authorize.CartAvilablityAuthorization,
   authController.signIn_auth
 );
 

@@ -31,6 +31,20 @@ const signIn_auth = asyncHandler(async (req, res) => {
     sameSite: "lax", // Protects against CSRF attacks
   });
 
+  const { CartId } = req.auth;
+
+  const newCart = await cartService.syncCartWithUser(CartId, account.id);
+
+  const CART = jwt.sign({ id: newCart._id }, env.jwt.secret, {
+    expiresIn: env.jwt.expiresIn,
+  });
+  res.cookie("CART", `Bearer ${CART}`, {
+    maxAge: 30 * 24 * 60 * 60 * 1000, // Expires in 24 hours (in milliseconds)
+    httpOnly: true, // Prevents client-side JS access (mitigates XSS)
+    secure: env.nodeEnv === "production", // Sent only over HTTPS in production
+    sameSite: "lax", // Protects against CSRF attacks
+  });
+
   res.status(201).send({ data: sanitizeAccount(account) });
 });
 
@@ -60,11 +74,29 @@ const signUp_auth = asyncHandler(async (req, res) => {
     sameSite: "lax", // Protects against CSRF attacks
   });
 
+
+
+
+  const { CartId } = req.auth;
+
+  const newCart = await cartService.syncCartWithUser(CartId, account.id);
+
+  const CART = jwt.sign({ id: newCart._id }, env.jwt.secret, {
+    expiresIn: env.jwt.expiresIn,
+  });
+  res.cookie("CART", `Bearer ${CART}`, {
+    maxAge: 30 * 24 * 60 * 60 * 1000, // Expires in 24 hours (in milliseconds)
+    httpOnly: true, // Prevents client-side JS access (mitigates XSS)
+    secure: env.nodeEnv === "production", // Sent only over HTTPS in production
+    sameSite: "lax", // Protects against CSRF attacks
+  });
+
   res.status(201).send({ data: sanitizeAccount(newUser) });
 });
 
 const signOut_auth = asyncHandler(async (req, res) => {
   res.clearCookie("TOKEN");
+  res.clearCookie("CART");
   res.status(200).send({ msg: "signed Out successfully" });
 });
 

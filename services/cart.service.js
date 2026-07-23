@@ -1,4 +1,5 @@
 import Cart from "../models/Cart.js";
+import CartItems from "../services/cartItems.service.js";
 
 const createCart = async (data) => {
   try {
@@ -9,9 +10,50 @@ const createCart = async (data) => {
     throw error;
   }
 };
-const syncCartWithUser = async (cartId, userId,) => {
+
+const syncCartWithUser = async (cartId, userId) => {
   try {
-    await Cart.findByIdAndUpdate(cartId,{userId , signIn:true})
+    if (cartId) {
+      let cartItems = await CartItems.getAllcartItems({ cartId });
+      const userCart = await Cart.findOne({ userId });
+      if (userCart) {
+        for (let i = 0; i < cartItems.length; i++) {
+          const checkSameProduct = await CartItems.getcartItem({
+            productId: cartItems[i].productId,
+            cartId: userCart.id,
+          });
+
+          if (checkSameProduct) {
+            const newQuantity = cartItems[i].quantity + checkSameProduct.quantity;
+            await CartItems.updatecartItem(cartItems[i].id, {
+              cartId: userCart.id,
+              quantity: newQuantity,
+            });
+          } else {
+            await CartItems.updatecartItem(cartItems[i].id, {
+              cartId: userCart.id,
+            });
+          }
+        }
+
+        await Cart.findByIdAndDelete(cartId);
+        return userCart;
+      } else {
+        await Cart.findByIdAndUpdate(cartId, {
+          userId: userId,
+          signIn: true,
+        });
+        const newCart = await Cart.findById(cartId);
+        return newCart;
+      }
+    } else {
+      const userCart = await Cart.findOne({ userId });
+      if (userCart) return userCart;
+      else {
+        const newCart = await createCart({ userId, signIn: true });
+        return newCart;
+      }
+    }
     return;
   } catch (error) {
     throw error;

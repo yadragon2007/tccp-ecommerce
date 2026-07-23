@@ -38,7 +38,7 @@ app.use(
     credentials: true,
   }),
 );
-// seeder 
+// seeder
 import startup from "./utils/startup.js";
 await startup();
 // expressSession
@@ -72,11 +72,13 @@ import cart from "./routes/cart.routes.js";
 app.use("/api/cart", cart);
 import cartitems from "./routes/cartItems.routes.js";
 app.use("/api/cartItems", cartitems);
+
 // 404
 app.use((req, res) => {
-  res.status(404).json({ status: "fail", message: "Route not found", code: "0006" });
+  res
+    .status(404)
+    .json({ status: "fail", message: "Route not found", code: "0006" });
 });
-
 
 /*====================== listening =======================*/
 const port = envConfig.port || 8080;
