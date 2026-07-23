@@ -79,7 +79,7 @@ const signUp_auth = asyncHandler(async (req, res) => {
 
   const { CartId } = req.auth;
 
-  const newCart = await cartService.syncCartWithUser(CartId, account.id);
+  const newCart = await cartService.syncCartWithUser(CartId, newUser.id);
 
   const CART = jwt.sign({ id: newCart._id }, env.jwt.secret, {
     expiresIn: env.jwt.expiresIn,
